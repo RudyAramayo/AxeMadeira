@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Axé Madeira 木</title>
+<meta name="description" content="Zen Woodcraft: Blog" />
+<!--STYLESHEETS-->
+
+<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="css/print.css" type="text/css" media="print" />
+<link rel="stylesheet" href="css/image-fade.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="css/contact-form.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="css/image-slider.css" type="text/css" media="screen" />
+
+<!--GOOGLE WEBFONTS
+<link href='http://fonts.googleapis.com/css?family=Oswald:300|Droid+Sans|Happy+Monkey' rel='stylesheet' type='text/css'>
+-->
+<link rel="stylesheet" href="css/google-font.css" type="text/css" media="screen" />
+
+<!--MOBILE SPECIFIC STYLESHEET-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<link media="only screen and (max-device-width: 480px)" href="css/mobile.css" type= "text/css" rel="stylesheet" />
+
+
+
+</head>
+
+<audio autoplay loop>
+      <source src="assets/forrest_audio.m4a">
+</audio
+
+<body>
+
+<div id="wrapper">
+
+<!--HEADER FOR MOBILES ONLY-->
+<header id="mobile">
+<h1><a href="#" title="Zen Woodwork">Axé Madeira 木</a></h1>
+</header>
+
+<!--MAIN NAVIGATION BAR-->
+<h1></h1>
+<nav id="topbar">
+
+<ul>
+<li><a href="index.html" >Axé Madeira 木</a></li>
+<li><a href="Gallery.html" >Gallery 芸術</a></li>
+<li><a href="Budo.html" >Budo 武道</a></li>
+<li><a href="Blog.html" >Wood Blog 木</a></li>
+<li><a href="Contact.html" >Contact 連絡</a></li>
+</ul>
+</nav><!--topbar-->
+<!--END MAIN NAVIGATION-->
+
+<!--MASTHEAD AND SOCIAL NETWORK LINKS-->
+<header id="main">
+
+<!--
+<nav id="social">
+<ul>
+<li class="tw"><a href="#" title="Follow us on Twitter">Twitter</a></li>
+<li class="fb"><a href="#" title="Find us on Facebook">Facebook</a></li>
+<li class="fl"><a href="#" title="See our Flickr photostream">Flickr</a></li>
+<li class="go"><a href="#" title="Find us on Goolge+">Google+</a></li>
+</ul>
+</nav>
+</header>
+
+<!--END MASTHEAD AND SOCIAL NETWORKING LINKS-->
+
+<!--MAIN CONTENT-->
+
+
+<!--<img src="assets/home_1.png" width="100%" height="auto" alt="Old photocamera">
+<h3> For the love of wood...</h3>-->
+<hr>
+
+
+<div id="blog_content">
+
+<h2>Wood Blog</h2>
+
+<article class="left">
+<h3>August 14, 2014</h3>
+
+<img src="assets/shoptools_1.png" width="263" height="350" alt="Old photocamera">
+<br>
+New Craftsman 14" drill press! Got it on sale for about $300.
+</article><!--end left-->
+
+<hr>
+</div>
+
+
+
+</div>
+
+
+<nav id="social">
+
+<ul>
+<li>
+	<a href="https://www.twitter.com/Axemadeira" title="Follow us on Twitter">
+		<img src="assets/social-tw1.png"/>
+	</a>
+</li>	
+<li>
+	<a href="https://www.facebook.com/pages/AxéMadeira/315141438664310" title="Find us on Facebook">
+		<img src="assets/social-fb1.png"/>
+	</a>
+</li>	
+<li>
+	<a href="https://www.flickr.com/photos/126918295@N03/" title="See our Flickr photostream">
+		<img src="assets/social-fl1.png"/>
+	</a>
+</li>	
+<li>
+	<a href="https://plus.google.com/114883642928399820906/posts/p/pub" title="Google+">
+		<img src="assets/social-go1.png"/>
+	</a>
+</li>	
+
+</ul>
+</nav>
+
+<script src="js/jquery-2.1.0.js" ></script>
+
+<script>
+	var ul;
+	var liItems;
+	var imageNumber;
+	var imageWidth;
+	var prev, next;
+	var currentPostion = 0;
+	var currentImage = 0;
+
+	$("#blog_content").fadeOut(0);	
+	$("#blog_content").fadeIn(4000);
+
+	document.body.style.background="url('assets/background_8.png') no-repeat #FFF center center";
+
+
+	function init(){
+		ul = document.getElementById('image_slider');
+		liItems = ul.children;
+		imageNumber = liItems.length;
+		imageWidth = liItems[0].children[0].clientWidth;
+		ul.style.width = parseInt(imageWidth * imageNumber) + 'px';
+		prev = document.getElementById("prev");
+		next = document.getElementById("next");
+		generatePager(imageNumber);
+		//.onclike = slide(-1) will be fired when onload;
+		/*
+		prev.onclick = function(){slide(-1);};
+		next.onclick = function(){slide(1);};*/
+		prev.onclick = function(){ onClickPrev();};
+		next.onclick = function(){ onClickNext();};
+	}
+
+	function animate(opts){
+		var start = new Date;
+		var id = setInterval(function(){
+			var timePassed = new Date - start;
+			var progress = timePassed / opts.duration;
+			if (progress > 1){
+				progress = 1;
+			}
+			var delta = opts.delta(progress);
+			opts.step(delta);
+			if (progress == 1){
+				clearInterval(id);
+				opts.callback();
+			}
+		}, opts.delay || 17);
+		//return id;
+	}
+
+	function slideTo(imageToGo){
+		var direction;
+		var numOfImageToGo = Math.abs(imageToGo - currentImage);
+		// slide toward left
+
+		direction = currentImage > imageToGo ? 1 : -1;
+		currentPostion = -1 * currentImage * imageWidth;
+		var opts = {
+			duration:1000,
+			delta:function(p){return p;},
+			step:function(delta){
+				ul.style.left = parseInt(currentPostion + direction * delta * imageWidth * numOfImageToGo) + 'px';
+			},
+			callback:function(){currentImage = imageToGo;}	
+		};
+		animate(opts);
+	}
+
+	function onClickPrev(){
+		if (currentImage == 0){
+			slideTo(imageNumber - 1);
+		} 		
+		else{
+			slideTo(currentImage - 1);
+		}		
+	}
+
+	function onClickNext(){
+		if (currentImage == imageNumber - 1){
+			slideTo(0);
+		}		
+		else{
+			slideTo(currentImage + 1);
+		}		
+	}
+
+	function generatePager(imageNumber){	
+		var pageNumber;
+		var pagerDiv = document.getElementById('pager');
+		for (i = 0; i < imageNumber; i++){
+			var li = document.createElement('li');
+			pageNumber = document.createTextNode(parseInt(i + 1));
+			li.appendChild(pageNumber);
+			pagerDiv.appendChild(li);
+			// add event inside a loop, closure issue.
+			li.onclick = function(i){
+				return function(){
+					slideTo(i);
+				}
+			}(i);
+		}	
+		var computedStyle = document.defaultView.getComputedStyle(li, null);
+		//border width 1px; offsetWidth = 22
+		var liWidth = parseInt(li.offsetWidth);
+		var liMargin = parseInt(computedStyle.margin.replace('px',""));
+		pagerDiv.style.width = parseInt((liWidth + liMargin * 3) * imageNumber) + 'px';
+	}
+
+	function submitContactRequest()
+	{
+		var name = $("#nameField").val();
+		var email = $("#emailField").val();
+		var message = $("#messageField").val();
+
+		window.open("mailto:" + "axemadeira@gmail.com" + "?subject=" + name + " &body=" + message);
+		document.getElementById("ContactPage").className = "fade-out";
+	}
+	function showHomePage (context)
+	{
+		document.body.style.background="url('assets/background_4.png') no-repeat #FFF center center";
+
+		$('#home_content').fadeIn(300);
+		$('#gallery_content').fadeOut(300);
+		$('#bokken_content').fadeOut(300);	
+		$("#blog_content").fadeOut(300);
+		$("#contact_content").fadeOut(300);
+	}
+	function showGalleryPage (context)
+	{
+		document.body.style.background="url('assets/background_1.png') no-repeat #FFF center center";
+
+		$('#home_content').fadeOut(300);
+		$('#gallery_content').fadeIn(300);
+		$('#bokken_content').fadeOut(300);	
+		$("#blog_content").fadeOut(300);
+		$("#contact_content").fadeOut(300);
+	}
+	function showBokkenPage (context)
+	{
+		document.body.style.background="url('assets/background_9.png') no-repeat #FFF center center";
+
+		$('#home_content').fadeOut(300);
+		$('#gallery_content').fadeOut(300);
+		$('#bokken_content').fadeIn(300);	
+		$("#blog_content").fadeOut(300);
+		$("#contact_content").fadeOut(300);
+	}
+	function showBlogPage (context)
+	{
+		document.body.style.background="url('assets/background_8.png') no-repeat #FFF center center";
+
+		$('#home_content').fadeOut(300);
+		$('#gallery_content').fadeOut(300);
+		$('#bokken_content').fadeOut(300);	
+		$("#blog_content").fadeIn(300);
+		$("#contact_content").fadeOut(300);
+	}
+	function showContactPage (context)
+	{
+		document.body.style.background="url('assets/background_9.png') no-repeat #FFF center center";
+
+		$('#home_content').fadeOut(300);
+		$('#gallery_content').fadeOut(300);
+		$('#bokken_content').fadeOut(300);	
+		$("#blog_content").fadeOut(300);
+		$("#contact_content").fadeIn(300);
+	}
+
+	window.onload = init;
+</script>
+
+</body>
+</html>
